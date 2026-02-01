@@ -1,40 +1,40 @@
 module.exports = {
-	// You can customize the language here or directly in the command files
+	// يمكنك تخصيص اللغة هنا أو مباشرة في ملفات الأوامر
 	autoUpdateThreadInfo: {},
 	checkwarn: {
 		text: {
-			warn: "Member %1 has been warned 3 times before and has been banned from the chat box\n- Name: %1\n- Uid: %2\n- To unban, please use the \"%3warn unban <uid>\" command (with uid is the uid of the person you want to unban)",
-			needPermission: "Bot needs administrator permission to kick banned members"
+			warn: "تم تحذير العضو %1 ثلاث مرات مسبقاً وتم حظره من صندوق المحادثة\n- الاسم: %1\n- معرف المستخدم: %2\n- لإلغاء الحظر، يرجى استخدام الأمر \"%3warn unban <uid>\" (حيث يكون uid هو معرف المستخدم الذي تريد رفع الحظر عنه)",
+			needPermission: "يحتاج البوت إلى صلاحيات المسؤول لطرد الأعضاء المحظورين"
 		}
 	},
 	leave: {
 		text: {
-			session1: "morning",
-			session2: "noon",
-			session3: "afternoon",
-			session4: "evening",
-			leaveType1: "left the group",
-			leaveType2: "was kicked from the group"
+			session1: "صباحاً",
+			session2: "ظهراً",
+			session3: "بعد الظهر",
+			session4: "مساءً",
+			leaveType1: "غادر المجموعة",
+			leaveType2: "تم طرده من المجموعة"
 		}
 	},
 	logsbot: {
 		text: {
-			title: "====== Bot logs ======",
-			added: "\n✅\nEvent: bot has been added to a new group\n- Added by: %1",
-			kicked: "\n❌\nEvent: bot has been kicked\n- Kicked by: %1",
-			footer: "\n- User ID: %1\n- Group: %2\n- Group ID: %3\n- Time: %4"
+			title: "====== سجلات البوت ======",
+			added: "\n✅\nالحدث: تم إضافة البوت إلى مجموعة جديدة\n- أضيف بواسطة: %1",
+			kicked: "\n❌\nالحدث: تم طرد البوت\n- تم الطرد بواسطة: %1",
+			footer: "\n- معرف المستخدم: %1\n- المجموعة: %2\n- معرف المجموعة: %3\n- الوقت: %4"
 		}
 	},
 	onEvent: {},
 	welcome: {
 		text: {
-			session1: "morning",
-			session2: "noon",
-			session3: "afternoon",
-			session4: "evening",
-			welcomeMessage: "Thank you for inviting me to the group!\nBot prefix: %1\nTo view the list of commands, please enter: %1help",
-			multiple1: "you",
-			multiple2: "you guys"
+			session1: "صباحاً",
+			session2: "ظهراً",
+			session3: "بعد الظهر",
+			session4: "مساءً",
+			welcomeMessage: "شكراً لدعوتي إلى المجموعة!\nبادئة البوت: %1\nلعرض قائمة الأوامر، يرجى إدخال: %1help",
+			multiple1: "أنت",
+			multiple2: "أنتم"
 		}
 	}
 };
