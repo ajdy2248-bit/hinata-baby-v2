@@ -4,7 +4,7 @@ const path = require("path");
 
 let pathLanguageFile = `${__dirname}/${global.GoatBot.config.language}.lang`;
 if (!fs.existsSync(pathLanguageFile)) {
-	log.warn("LANGUAGE", `Can't find language file ${global.GoatBot.config.language}.lang, using default language file "${__dirname}/en.lang"`);
+	log.warn("LANGUAGE", `لا يمكن العثور على ملف اللغة ${global.GoatBot.config.language}.lang، سيتم استخدام ملف اللغة الافتراضي "${__dirname}/en.lang"`);
 	pathLanguageFile = `${__dirname}/en.lang`;
 }
 const readLanguage = fs.readFileSync(pathLanguageFile, "utf-8");
@@ -37,7 +37,7 @@ function getText(head, key, ...args) {
 		let pathLanguageFile = path.normalize(`${__dirname}/${head.lang}.lang`);
 		head = head.head;
 		if (!fs.existsSync(pathLanguageFile)) {
-			log.warn("LANGUAGE", `Can't find language file ${pathLanguageFile}, using default language file "${path.normalize(`${__dirname}/en.lang`)}"`);
+			log.warn("LANGUAGE", `لا يمكن العثور على ملف اللغة ${pathLanguageFile}, سيتم استخدام ملف اللغة الافتراضي "${path.normalize(`${__dirname}/en.lang`)}"`);
 			pathLanguageFile = `${__dirname}/en.lang`;
 		}
 		const readLanguage = fs.readFileSync(pathLanguageFile, "utf-8");
@@ -50,7 +50,7 @@ function getText(head, key, ...args) {
 		langObj = global.language;
 	}
 	if (!langObj[head]?.hasOwnProperty(key))
-		return `Can't find text: "${head}.${key}"`;
+		return `لا يمكن العثور على النص: "${head}.${key}"`;
 	let text = langObj[head][key];
 	for (let i = args.length - 1; i >= 0; i--)
 		text = text.replace(new RegExp(`%${i + 1}`, 'g'), args[i]);
