@@ -2,58 +2,59 @@ const fs = require("fs-extra");
 const log = require("../logger/log.js");
 const path = require("path");
 
-let pathLanguageFile = `${__dirname}/${global.GoatBot.config.language}.lang`;
+// حدد ملف اللغة حسب الإعداد، جرب ar أولاً ثم en إذا لم يوجد
+let languageCode = global.GoatBot.config.language || "ar";
+let pathLanguageFile = path.normalize(`${__dirname}/${languageCode}.js`);
+
+// إذا لم يوجد ملف اللغة المطلوب
 if (!fs.existsSync(pathLanguageFile)) {
-	log.warn("LANGUAGE", `لا يمكن العثور على ملف اللغة ${global.GoatBot.config.language}.lang، سيتم استخدام ملف اللغة الافتراضي "${__dirname}/en.lang"`);
-	pathLanguageFile = `${__dirname}/en.lang`;
-}
-const readLanguage = fs.readFileSync(pathLanguageFile, "utf-8");
-const languageData = readLanguage
-	.split(/\r?\n|\r/)
-	.filter(line => line && !line.trim().startsWith("#") && !line.trim().startsWith("//") && line != "");
+	log.warn(
+		"LANGUAGE",
+		`لا يمكن العثور على ملف اللغة ${languageCode}.js، سيتم استخدام ملف اللغة العربي "ar.js"`
+	);
+	pathLanguageFile = path.normalize(`${__dirname}/ar.js`);
 
-global.language = convertLangObj(languageData);
-
-function convertLangObj(languageData) {
-	const obj = {};
-	for (const sentence of languageData) {
-		const getSeparator = sentence.indexOf('=');
-		const itemKey = sentence.slice(0, getSeparator).trim();
-		const itemValue = sentence.slice(getSeparator + 1, sentence.length).trim();
-		const head = itemKey.slice(0, itemKey.indexOf('.'));
-		const key = itemKey.replace(head + '.', '');
-		const value = itemValue.replace(/\\n/gi, '\n');
-		if (!obj[head])
-			obj[head] = {};
-		obj[head][key] = value;
+	// إذا لم يكن ar.js موجودًا أيضًا، استخدم en.js كخيار أخير
+	if (!fs.existsSync(pathLanguageFile)) {
+		log.warn(
+			"LANGUAGE",
+			`لا يمكن العثور على ملف اللغة العربي ar.js، سيتم استخدام اللغة الإنجليزية en.js`
+		);
+		pathLanguageFile = path.normalize(`${__dirname}/en.js`);
 	}
-
-	return obj;
 }
 
+// استيراد محتوى الملف ككائن JS
+const languageData = require(pathLanguageFile);
+global.language = languageData;
+
+// دالة لإرجاع النصوص حسب الرأس والمفتاح
 function getText(head, key, ...args) {
-	let langObj;
-	if (typeof head == "object") {
-		let pathLanguageFile = path.normalize(`${__dirname}/${head.lang}.lang`);
+	let langObj = global.language;
+
+	if (typeof head === "object") {
+		// دعم الشكل { head: "welcome", lang: "ar" } إذا تم تمريره
+		let tmpPath = path.normalize(`${__dirname}/${head.lang}.js`);
 		head = head.head;
-		if (!fs.existsSync(pathLanguageFile)) {
-			log.warn("LANGUAGE", `لا يمكن العثور على ملف اللغة ${pathLanguageFile}, سيتم استخدام ملف اللغة الافتراضي "${path.normalize(`${__dirname}/en.lang`)}"`);
-			pathLanguageFile = `${__dirname}/en.lang`;
+
+		if (fs.existsSync(tmpPath)) {
+			langObj = require(tmpPath);
+		} else {
+			log.warn("LANGUAGE", `لا يمكن العثور على ملف اللغة ${tmpPath}, سيتم استخدام اللغة الافتراضية ar.js`);
+			langObj = require(`${__dirname}/ar.js`);
 		}
-		const readLanguage = fs.readFileSync(pathLanguageFile, "utf-8");
-		const languageData = readLanguage
-			.split(/\r?\n|\r/)
-			.filter(line => line && !line.trim().startsWith("#") && !line.trim().startsWith("//") && line != "");
-		langObj = convertLangObj(languageData);
 	}
-	else {
-		langObj = global.language;
-	}
-	if (!langObj[head]?.hasOwnProperty(key))
+
+	if (!langObj[head]?.hasOwnProperty(key)) {
 		return `لا يمكن العثور على النص: "${head}.${key}"`;
+	}
+
 	let text = langObj[head][key];
-	for (let i = args.length - 1; i >= 0; i--)
-		text = text.replace(new RegExp(`%${i + 1}`, 'g'), args[i]);
+
+	// استبدال المتغيرات %1 %2 ...
+	for (let i = args.length - 1; i >= 0; i--) {
+		text = text.replace(new RegExp(`%${i + 1}`, "g"), args[i]);
+	}
 
 	return text;
 }
